@@ -4,13 +4,16 @@ using OpenQA.Selenium.Support.UI;
 
 namespace FinalProject.Helpers
 {
-    public class SeleniumHelpers
+    public class SiteHelpers
     {
         public static string URL => "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
+        public static string AdminId => "Admin";
+        public static string AdminPassword => "admin123";
+
 
         readonly private IWebDriver _driver;
 
-        public SeleniumHelpers(IWebDriver driver)
+        public SiteHelpers(IWebDriver driver)
         {
             _driver = driver;
         }
