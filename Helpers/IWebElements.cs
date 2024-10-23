@@ -33,7 +33,7 @@ namespace FinalProject.Helpers
 		public static void ScrollAndClickButton(this IWebElement element, IWebDriver driver)
 		{
 			Actions act = new Actions(driver);
-			//act.MoveToElement(_apply_page.SubmitButton).Click();
+			//act.MoveToElement(element).Click();
 
 			act.ScrollToElement(element).Perform();
 			element.Click();

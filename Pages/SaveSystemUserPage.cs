@@ -10,8 +10,9 @@ namespace FinalProject.Pages
         public IWebElement StatusDropdown => _driver.FindElement(By.XPath("//div[3]//div[1]//div[2]//div[1]//div[1]//div[1]"));
         public IWebElement StatusDropdownEnabledSelection => _driver.FindElement(By.XPath("//span[normalize-space()='Enabled']"));
 
+
         public IWebElement EmployeeNameSearchBox => _driver.FindElement(By.XPath("//input[@placeholder='Type for hints...']"));
-        public IWebElement EmployeeNameSearchBoxEmployeeSelection => _driver.FindElement(By.XPath("//span[contains(text(),'Ranga')]"));
+        public IWebElement EmployeeNameSearchBoxEmployeeSelection(string option) => _driver.FindElement(By.XPath($"//span[contains(text(),'{option}')]"));
 
         public IWebElement UserNameTextBox => _driver.FindElement(By.XPath("//div[@class='oxd-form-row']//div[@class='oxd-grid-2 orangehrm-full-width-grid']//div[@class='oxd-grid-item oxd-grid-item--gutters']//div[@class='oxd-input-group oxd-input-field-bottom-space']//div//input[@class='oxd-input oxd-input--active']"));
 

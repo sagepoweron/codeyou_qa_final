@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.Generic;
 
 namespace FinalProject.Helpers
 {
@@ -67,6 +68,20 @@ namespace FinalProject.Helpers
         public void LoadWebsite()
         {
             _driver.Navigate().GoToUrl(URL);
+        }
+
+
+
+        public void ClickDropDownElement(IWebDriver driver, IWebElement dropdown_element, string option)
+        {
+            //List<WebElement> myElements = driver.FindElements(dropdown_element);
+            //for (WebElement e : myElements)
+            //{
+            //    if (e.getText().equalsIgnoreCase("Your_Desire_Value"))
+            //    {
+            //        e.click();
+            //    }
+            //}
         }
     }
 }
