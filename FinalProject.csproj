@@ -131,7 +131,7 @@
   <ItemGroup>
     <Compile Include="Helpers\IWebElements.cs" />
     <Compile Include="Pages\SaveSystemUserPage.cs" />
-    <Compile Include="Pages\UserManagementPage.cs" />
+    <Compile Include="Pages\ViewSystemUsersPage.cs" />
     <Compile Include="Pages\DashboardPage.cs" />
     <Compile Include="Pages\LoginPage.cs" />
     <Compile Include="Helpers\SiteHelpers.cs" />
