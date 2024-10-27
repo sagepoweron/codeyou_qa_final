@@ -3,8 +3,10 @@ using FinalProject.Pages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Linq;
 
 namespace FinalProject
 {
@@ -13,23 +15,27 @@ namespace FinalProject
     {
         private IWebDriver _driver;
         private SiteHelpers _helpers;
+        private Actions _actions;
         private LoginPage _login_page;
         private DashboardPage _dashboard_page;
         private ViewSystemUsersPage _view_system_users_page;
         private SaveSystemUserPage _save_system_user_page;
+        private ViewPersonalDetailsPage _view_personal_details_page;
 
-        
+
         [TestInitialize]
         public void Initialize()
         {
             _driver = new ChromeDriver();
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             _helpers = new SiteHelpers(_driver);
+            _actions = new Actions(_driver);
 
             _login_page = new LoginPage(_driver);
             _dashboard_page = new DashboardPage(_driver);
             _view_system_users_page = new ViewSystemUsersPage(_driver);
             _save_system_user_page = new SaveSystemUserPage(_driver);
+            _view_personal_details_page = new ViewPersonalDetailsPage(_driver);
         }
         [TestCleanup]
         public void Cleanup()
@@ -123,8 +129,7 @@ namespace FinalProject
         /// Test 2
         /// </summary>
         [TestMethod]
-        [DataRow("Andres Stiven Gomez", "Andres Gomez")]
-        public void AddUserTest(string employee_name, string user_name_dropdown)
+        public void AddUserTest()
         {
             _driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
             _driver.Manage().Window.Maximize();
@@ -150,17 +155,37 @@ namespace FinalProject
 
             #region save system user page
             wait.Until(d => _save_system_user_page.UserRoleDropdown.Displayed);
+
             _save_system_user_page.UserRoleDropdown.Click();
-            _save_system_user_page.UserRoleDropdownAdminSelection.Click();
+            _actions
+                .KeyDown(Keys.ArrowDown)
+                .KeyDown(Keys.Enter)
+                .Perform();
+
             _save_system_user_page.StatusDropdown.Click();
-            _save_system_user_page.StatusDropdownEnabledSelection.Click();
-            _save_system_user_page.EmployeeNameSearchBox.SendKeys(employee_name);
-            _save_system_user_page.EmployeeNameSearchBoxEmployeeSelection(employee_name).Click();
+            _actions
+                .KeyDown(Keys.ArrowDown)
+                .KeyDown(Keys.Enter)
+                .Perform();
+
+            _save_system_user_page.EmployeeNameSearchBox.Click();
+            _actions
+                .SendKeys("a")
+                .Pause(TimeSpan.FromSeconds(5))
+                .KeyDown(Keys.ArrowDown)
+                .KeyDown(Keys.Enter)
+                .Perform();
+            string employee_name = _save_system_user_page.EmployeeNameSearchBox.GetAttribute("value");
+            string first_name = employee_name.Split(' ')[0];
+            string last_name = employee_name.Split(' ').Last();
+
             _save_system_user_page.UserNameTextBox.SendKeys(user_name);
             _save_system_user_page.PasswordTextBox.SendKeys(user_password);
             _save_system_user_page.ConfirmPasswordTextBox.SendKeys(user_password);
             _save_system_user_page.SaveButton.Click();
-            //logout
+
+            _actions.Pause(TimeSpan.FromSeconds(5)).Perform();
+
             _save_system_user_page.UserDropdown.Click();
             _save_system_user_page.UserDropdownLogoutButton.Click();
             #endregion
@@ -172,8 +197,44 @@ namespace FinalProject
 
             #region dashboard page
             wait.Until(d => _dashboard_page.UserDropDownName.Text);
+
             //verify user is logged in
-            Assert.IsTrue(_dashboard_page.UserDropDownName.Text == user_name_dropdown);
+            Assert.IsTrue(_dashboard_page.UserDropDownName.Text == $"{first_name} {last_name}");
+
+            //logout
+            _dashboard_page.UserDropDownName.Click();
+            _dashboard_page.UserDropdownLogoutButton.Click();
+            #endregion
+
+            //login and delete user
+            #region login page
+            wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
+            _login_page.UserLogin("Admin", "admin123");
+            #endregion
+
+            #region admin page
+            wait.Until(d => _dashboard_page.AdminButton.Displayed);
+            _dashboard_page.AdminButton.Click();
+            #endregion
+
+            #region view system users page
+            wait.Until(d => _view_system_users_page.UserSearchBox.Displayed);
+            _view_system_users_page.UserSearchBox.SendKeys(user_name);
+            _view_system_users_page.SearchButton.Click();
+
+            _actions.Pause(TimeSpan.FromSeconds(5)).Perform();
+            wait.Until(d => _view_system_users_page.UserNameText(user_name).Displayed);
+            Assert.IsTrue(_view_system_users_page.UserNameText(user_name).Displayed);
+            _view_system_users_page.DeleteButton.Click();
+            _view_system_users_page.ConfirmDeleteButton.Click();
+
+            //wait for delete
+            _actions.Pause(TimeSpan.FromSeconds(5)).Perform();
+
+            //logout
+            _dashboard_page.UserDropDownName.Click();
+            _dashboard_page.UserDropdownLogoutButton.Click();
             #endregion
         }
 

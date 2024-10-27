@@ -13,6 +13,8 @@ namespace FinalProject.Pages
         //public string Title => "Title";
         public IWebElement AdminButton => _driver.FindElement(By.XPath("//span[normalize-space()='Admin']"));
         public IWebElement UserDropDownName => _driver.FindElement(By.XPath("//p[@class='oxd-userdropdown-name']"));
+        //public IWebElement UserDropdown => _driver.FindElement(By.XPath("//li[@class='oxd-userdropdown']"));
+        public IWebElement UserDropdownLogoutButton => _driver.FindElement(By.XPath("//a[normalize-space()='Logout']"));
 
         readonly private IWebDriver _driver;
         public DashboardPage(IWebDriver driver)
