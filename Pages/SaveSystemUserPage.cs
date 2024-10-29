@@ -5,7 +5,7 @@ namespace FinalProject.Pages
     public class SaveSystemUserPage
     {
         public IWebElement UserRoleDropdown => _driver.FindElement(By.XPath("//div[@class='oxd-grid-2 orangehrm-full-width-grid']//div[1]//div[1]//div[2]//div[1]//div[1]//div[1]"));
-        
+
         public IWebElement StatusDropdown => _driver.FindElement(By.XPath("//div[3]//div[1]//div[2]//div[1]//div[1]//div[1]"));
         
         public IWebElement EmployeeNameSearchBox => _driver.FindElement(By.XPath("//input[@placeholder='Type for hints...']"));

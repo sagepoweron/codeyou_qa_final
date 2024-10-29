@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\IWebElements.cs" />
+    <Compile Include="Pages\EditUserPage.cs" />
     <Compile Include="Pages\SaveSystemUserPage.cs" />
     <Compile Include="Pages\ViewPersonalDetailsPage.cs" />
     <Compile Include="Pages\ViewSystemUsersPage.cs" />
