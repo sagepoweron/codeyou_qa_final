@@ -130,11 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\IWebElements.cs" />
+    <Compile Include="Pages\UserInfoPage.cs" />
     <Compile Include="Pages\EditUserPage.cs" />
-    <Compile Include="Pages\SaveSystemUserPage.cs" />
+    <Compile Include="Pages\CreateUserPage.cs" />
     <Compile Include="Pages\ViewPersonalDetailsPage.cs" />
     <Compile Include="Pages\ViewSystemUsersPage.cs" />
-    <Compile Include="Pages\DashboardPage.cs" />
+    <Compile Include="Pages\Dashboard.cs" />
     <Compile Include="Pages\LoginPage.cs" />
     <Compile Include="Helpers\SiteHelpers.cs" />
     <Compile Include="UnitTest1.cs" />
