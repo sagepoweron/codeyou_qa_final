@@ -12,9 +12,11 @@ namespace FinalProject.Pages
     {
         public IWebElement AdminButton => _driver.FindElement(By.XPath("//span[normalize-space()='Admin']"));
         public IWebElement InfoButton => _driver.FindElement(By.XPath("//span[normalize-space()='My Info']"));
+        public IWebElement LeaveButton => _driver.FindElement(By.XPath("//span[normalize-space()='Leave']"));
         public IWebElement UserNameDropDown => _driver.FindElement(By.XPath("//p[@class='oxd-userdropdown-name']"));
         //public IWebElement UserDropdown => _driver.FindElement(By.XPath("//li[@class='oxd-userdropdown']"));
         public IWebElement UserDropdownLogoutButton => _driver.FindElement(By.XPath("//a[normalize-space()='Logout']"));
+        public IWebElement HelpButton => _driver.FindElement(By.XPath("//button[@title='Help']//i"));
 
         readonly private IWebDriver _driver;
         public Dashboard(IWebDriver driver)

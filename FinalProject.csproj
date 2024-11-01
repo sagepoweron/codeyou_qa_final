@@ -130,6 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\IWebElements.cs" />
+    <Compile Include="Pages\ApplyLeavePage.cs" />
+    <Compile Include="Pages\HelpPage.cs" />
+    <Compile Include="Pages\LeavePage.cs" />
     <Compile Include="Pages\UserInfoPage.cs" />
     <Compile Include="Pages\EditUserPage.cs" />
     <Compile Include="Pages\CreateUserPage.cs" />
@@ -144,6 +147,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Files\test_document.txt" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,7 +6,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace FinalProject
 {
@@ -23,6 +25,9 @@ namespace FinalProject
         private ViewPersonalDetailsPage _view_personal_details_page;
         private EditUserPage _edit_user_page;
         private UserInfoPage _user_info_page;
+        private LeavePage _leave_page;
+        private ApplyLeavePage _apply_leave_page;
+        private HelpPage _help_page;
 
 
         [TestInitialize]
@@ -40,6 +45,9 @@ namespace FinalProject
             _view_personal_details_page = new ViewPersonalDetailsPage(_driver);
             _edit_user_page = new EditUserPage(_driver);
             _user_info_page = new UserInfoPage(_driver);
+            _leave_page = new LeavePage(_driver);
+            _apply_leave_page = new ApplyLeavePage(_driver);
+            _help_page = new HelpPage(_driver);
 
             _driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
             _driver.Manage().Window.Maximize();
@@ -247,6 +255,131 @@ namespace FinalProject
         [TestMethod]
         public void ApplyForLeaveTest()
         {
+            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
+            _login_page.Login("Admin", "admin123");
+
+            _wait.Until(d => _dashboard.LeaveButton.Displayed);
+            _dashboard.LeaveButton.Click();
+
+            _wait.Until(d => _leave_page.ApplyButton.Displayed);
+            _leave_page.ApplyButton.Click();
+
+            DateTime start_date = DateTime.Now + TimeSpan.FromDays(7);
+            DateTime end_date = start_date + TimeSpan.FromDays(7);
+            string start_text = start_date.ToString("yyyy-dd-MM");
+            string end_text = end_date.ToString("yyyy-dd-MM");
+
+
+            _wait.Until(d => _apply_leave_page.FromDropdown.Displayed);
+            new Actions(_driver)
+                .MoveToElement(_apply_leave_page.FromDropdown)
+                .Click()
+                .SendKeys(start_text)
+                .Perform();
+            new Actions(_driver)
+                .MoveToElement(_apply_leave_page.ToDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(end_text)
+                .Perform();
+
+
+            _wait.Until(d => _apply_leave_page.LeaveTypeDropdown.Displayed);
+            _apply_leave_page.LeaveTypeDropdown.Click();
+
+            new Actions(_driver)
+                .KeyDown(Keys.ArrowDown)
+                .KeyDown(Keys.Enter)
+                .Perform();
+
+            _apply_leave_page.CommentsTextbox.SendKeys("Test Comment");
+
+            //_apply_leave_page.ApplyButton.Click();
+            new Actions(_driver).Pause(TimeSpan.FromSeconds(3)).Perform();
+
+            //verify leave is pending on results page
+            _dashboard.LeaveButton.Click();
+            new Actions(_driver)
+                .MoveToElement(_apply_leave_page.FromDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(start_text)
+                .Perform();
+            new Actions(_driver)
+                .MoveToElement(_apply_leave_page.ToDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(end_text)
+                .Perform();
+            _leave_page.SearchButton.Click();
+            new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+            //Assert.IsTrue(_leave_page.LeavePendingText.Displayed);
+
+            //cancel leave
+            _leave_page.MyLeaveButton.Click();
+
+            _wait.Until(d => _leave_page.FromDropdown.Displayed);
+
+            new Actions(_driver)
+                .MoveToElement(_leave_page.FromDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(start_text)
+                .Perform();
+            new Actions(_driver)
+                .MoveToElement(_leave_page.ToDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(end_text)
+                .Perform();
+            _leave_page.SearchButton.Click();
+            new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+            //_leave_page.ThreeDotsMenu.Click();
+            //_leave_page.CancelLeaveButton.Click();
+            //new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+            Assert.IsTrue(_leave_page.LeaveCanceledText.Displayed);
+
+            //verify leave isn't on leave page
+            _dashboard.LeaveButton.Click();
+            new Actions(_driver)
+                .MoveToElement(_apply_leave_page.FromDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(start_text)
+                .Perform();
+            new Actions(_driver)
+                .MoveToElement(_apply_leave_page.ToDropdown)
+                .Click()
+                .KeyDown(Keys.Control)
+                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys(Keys.Delete)
+                .Pause(TimeSpan.FromSeconds(1))
+                .SendKeys(end_text)
+                .Perform();
+            _leave_page.SearchButton.Click();
+            new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+            Assert.IsTrue(_leave_page.NoRecordsFoundText.Displayed);
+
+            _dashboard.Logout();
         }
 
 
@@ -256,6 +389,27 @@ namespace FinalProject
         [TestMethod]
         public void OpenNewTabTest()
         {
+            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
+            _login_page.Login("Admin", "admin123");
+
+            _wait.Until(d => _dashboard.HelpButton.Displayed);
+            _dashboard.HelpButton.Click();
+            new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+
+            IList<string> windowHandles = new List<string>(_driver.WindowHandles);
+            _driver.SwitchTo().Window(windowHandles[1]);
+
+            Assert.IsTrue(_help_page.AdminUserGuide.Displayed);
+            Assert.IsTrue(_help_page.EmployeeUserGuide.Displayed);
+            Assert.IsTrue(_help_page.MobileApp.Displayed);
+            Assert.IsTrue(_help_page.AWSGuide.Displayed);
+            Assert.IsTrue(_help_page.FAQs.Displayed);
+            Assert.IsTrue(_help_page.SearchTextbox.Displayed);
+            Assert.IsTrue(_help_page.SignInLink.Displayed);
+
+            _driver.SwitchTo().Window(_driver.WindowHandles[0]);
+            _dashboard.Logout();
         }
 
 
@@ -265,6 +419,28 @@ namespace FinalProject
         [TestMethod]
         public void UploadFileTest()
         {
+            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
+            _login_page.Login("Admin", "admin123");
+
+            _wait.Until(d => _dashboard.InfoButton.Displayed);
+            _dashboard.InfoButton.Click();
+
+            _wait.Until(d => _user_info_page.AddButton.Displayed);
+            //_user_info_page.AddButton.Click();
+
+            //string path = "Files/test_document.txt";
+            //_user_info_page.FileInput.SendKeys(path);
+
+            //_user_info_page.SaveButton3.Click();
+            new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+
+            string date_text = DateTime.Now.ToString("yyyy-dd-MM");
+            string test_date = "2024-06-02";
+
+            Assert.IsTrue(_user_info_page.DateAddedText(test_date).Displayed);
+
+            _dashboard.Logout();
         }
 
 
