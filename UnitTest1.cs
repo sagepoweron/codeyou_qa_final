@@ -17,7 +17,6 @@ namespace FinalProject
     {
         private IWebDriver _driver;
         private SiteHelpers _helpers;
-        private WebDriverWait _wait;
         private LoginPage _login_page;
         private Dashboard _dashboard;
         private ViewSystemUsersPage _view_users_page;
@@ -36,7 +35,6 @@ namespace FinalProject
             _driver = new ChromeDriver();
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             _helpers = new SiteHelpers(_driver);
-            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
             _login_page = new LoginPage(_driver);
             _dashboard = new Dashboard(_driver);
@@ -66,23 +64,23 @@ namespace FinalProject
         [DataRow("SomeTestUser")]
         public void SearchAndEditUserTest(string user_name)
         {
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login(SiteHelpers.AdminId, SiteHelpers.AdminPassword);
 
             AdminAddUser(user_name, "admin123");
 
             //find and edit user
-            _wait.Until(d => _view_users_page.UserSearchBox.Displayed);
+            _driver.WaitUntil(() => _view_users_page.UserSearchBox.Displayed);
             _view_users_page.UserSearchBox.SendKeys(user_name);
             _view_users_page.SearchButton.Click();
-            new Actions(_driver).Pause(TimeSpan.FromSeconds(3)).Perform();
+            _driver.Pause(3);
             //_wait.Until(d => _view_system_users_page.UserNameText(user_name).Displayed);
             //Assert.IsTrue(_view_system_users_page.UserNameText(user_name).Displayed);
             _view_users_page.EditButton.Click();
 
 
-            _wait.Until(d => _edit_user_page.UserRoleDropdown.Displayed);
+            _driver.WaitUntil(() => _edit_user_page.UserRoleDropdown.Displayed);
             _edit_user_page.UserRoleDropdown.Click();
             new Actions(_driver)
                 .KeyDown(Keys.Down)
@@ -107,7 +105,7 @@ namespace FinalProject
         public void AddUserTest(string user_name, string user_password)
         {
             //login as admin
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login(SiteHelpers.AdminId, SiteHelpers.AdminPassword);
 
@@ -117,7 +115,7 @@ namespace FinalProject
             _dashboard.Logout();
 
             //login as user
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login(user_name, user_password);
 
@@ -125,7 +123,7 @@ namespace FinalProject
             _dashboard.Logout();
 
             //admin again
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login(SiteHelpers.AdminId, SiteHelpers.AdminPassword);
 
@@ -136,13 +134,13 @@ namespace FinalProject
 
         private string AdminAddUser(string user_name, string user_password)
         {
-            _wait.Until(d => _dashboard.AdminButton.Displayed);
+            _driver.WaitUntil(() => _dashboard.AdminButton.Displayed);
             _dashboard.AdminButton.Click();
 
-            _wait.Until(d => _view_users_page.AddButton.Displayed);
+            _driver.WaitUntil(() => _view_users_page.AddButton.Displayed);
             _view_users_page.AddButton.Click();
 
-            _wait.Until(d => _create_user_page.UserRoleDropdown.Displayed);
+            _driver.WaitUntil(() => _create_user_page.UserRoleDropdown.Displayed);
             _create_user_page.UserRoleDropdown.Click();
             new Actions(_driver)
                 .KeyDown(Keys.ArrowDown)
@@ -176,15 +174,15 @@ namespace FinalProject
         }
         private void AdminDeleteUser(string user_name)
         {
-            _wait.Until(d => _dashboard.AdminButton.Displayed);
+            _driver.WaitUntil(() => _dashboard.AdminButton.Displayed);
             _dashboard.AdminButton.Click();
 
-            _wait.Until(d => _view_users_page.UserSearchBox.Displayed);
+            _driver.WaitUntil(() => _view_users_page.UserSearchBox.Displayed);
             _view_users_page.UserSearchBox.SendKeys(user_name);
             _view_users_page.SearchButton.Click();
 
             new Actions(_driver).Pause(TimeSpan.FromSeconds(5)).Perform();
-            _wait.Until(d => _view_users_page.UserNameText(user_name).Displayed);
+            _driver.WaitUntil(() => _view_users_page.UserNameText(user_name).Displayed);
             Assert.IsTrue(_view_users_page.UserNameText(user_name).Displayed);
             _view_users_page.DeleteButton.Click();
             _view_users_page.ConfirmDeleteButton.Click();
@@ -194,7 +192,7 @@ namespace FinalProject
         }
         private void VerifyUserEmployeeName(string employee_name)
         {
-            _wait.Until(d => _dashboard.UserNameDropDown.Displayed);
+            _driver.WaitUntil(() => _dashboard.UserNameDropDown.Displayed);
             string first_name = employee_name.Split(' ')[0];
             string last_name = employee_name.Split(' ').Last();
             Assert.IsTrue(_dashboard.UserNameDropDown.Text == $"{first_name} {last_name}");
@@ -210,14 +208,14 @@ namespace FinalProject
         [DataRow("Phil", "McCracken")]
         public void ChangeUserNameTest(string first_name, string last_name)
         {
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login("Admin", "admin123");
 
-            _wait.Until(d => _dashboard.InfoButton.Displayed);
+            _driver.WaitUntil(() => _dashboard.InfoButton.Displayed);
             _dashboard.InfoButton.Click();
 
-            _wait.Until(d => _user_info_page.FirstNameBox.Displayed);
+            _driver.WaitUntil(() => _user_info_page.FirstNameBox.Displayed);
             _user_info_page.FirstNameBox.Click();
             new Actions(_driver)
                 .KeyDown(Keys.Control)
@@ -255,14 +253,14 @@ namespace FinalProject
         [TestMethod]
         public void ApplyForLeaveTest()
         {
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login("Admin", "admin123");
 
-            _wait.Until(d => _dashboard.LeaveButton.Displayed);
+            _driver.WaitUntil(() => _dashboard.LeaveButton.Displayed);
             _dashboard.LeaveButton.Click();
 
-            _wait.Until(d => _leave_page.ApplyButton.Displayed);
+            _driver.WaitUntil(() => _leave_page.ApplyButton.Displayed);
             _leave_page.ApplyButton.Click();
 
             DateTime start_date = DateTime.Now + TimeSpan.FromDays(7);
@@ -271,7 +269,7 @@ namespace FinalProject
             string end_text = end_date.ToString("yyyy-dd-MM");
 
 
-            _wait.Until(d => _apply_leave_page.FromDropdown.Displayed);
+            _driver.WaitUntil(() => _apply_leave_page.FromDropdown.Displayed);
             new Actions(_driver)
                 .MoveToElement(_apply_leave_page.FromDropdown)
                 .Click()
@@ -288,7 +286,7 @@ namespace FinalProject
                 .Perform();
 
 
-            _wait.Until(d => _apply_leave_page.LeaveTypeDropdown.Displayed);
+            _driver.WaitUntil(() => _apply_leave_page.LeaveTypeDropdown.Displayed);
             _apply_leave_page.LeaveTypeDropdown.Click();
 
             new Actions(_driver)
@@ -297,6 +295,9 @@ namespace FinalProject
                 .Perform();
 
             _apply_leave_page.CommentsTextbox.SendKeys("Test Comment");
+
+
+            //commented out to not clog up the site
 
             //_apply_leave_page.ApplyButton.Click();
             new Actions(_driver).Pause(TimeSpan.FromSeconds(3)).Perform();
@@ -328,7 +329,7 @@ namespace FinalProject
             //cancel leave
             _leave_page.MyLeaveButton.Click();
 
-            _wait.Until(d => _leave_page.FromDropdown.Displayed);
+            _driver.WaitUntil(() => _leave_page.FromDropdown.Displayed);
 
             new Actions(_driver)
                 .MoveToElement(_leave_page.FromDropdown)
@@ -389,11 +390,11 @@ namespace FinalProject
         [TestMethod]
         public void OpenNewTabTest()
         {
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login("Admin", "admin123");
 
-            _wait.Until(d => _dashboard.HelpButton.Displayed);
+            _driver.WaitUntil(() => _dashboard.HelpButton.Displayed);
             _dashboard.HelpButton.Click();
             new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
 
@@ -419,21 +420,21 @@ namespace FinalProject
         [TestMethod]
         public void UploadFileTest()
         {
-            _wait.Until(d => _login_page.UsernameTextBox.Displayed);
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
             _login_page.Login("Admin", "admin123");
 
-            _wait.Until(d => _dashboard.InfoButton.Displayed);
+            _driver.WaitUntil(() => _dashboard.InfoButton.Displayed);
             _dashboard.InfoButton.Click();
 
-            _wait.Until(d => _user_info_page.AddButton.Displayed);
+            _driver.WaitUntil(() => _user_info_page.AddButton.Displayed);
             //_user_info_page.AddButton.Click();
 
             //string path = "Files/test_document.txt";
             //_user_info_page.FileInput.SendKeys(path);
 
             //_user_info_page.SaveButton3.Click();
-            new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
+            _driver.Pause(1);
 
             string date_text = DateTime.Now.ToString("yyyy-dd-MM");
             string test_date = "2024-06-02";
@@ -450,6 +451,12 @@ namespace FinalProject
         [TestMethod]
         public void WildCardNegativeTest()
         {
+            //login as admin
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
+            Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
+            _login_page.Login(SiteHelpers.AdminId, SiteHelpers.AdminPassword);
+
+
         }
     }
 }

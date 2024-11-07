@@ -19,37 +19,12 @@ namespace FinalProject.Helpers
             _driver = driver;
         }
 
-        public void SelectTextFromDropDown(IWebElement element, string option_text)
-        {
-            SelectElement select_element = new SelectElement(element);
-            select_element.SelectByText(option_text);
-        }
-
-        public void SelectValueFromDropDown(IWebElement element, string option)
-        {
-            SelectElement select_element = new SelectElement(element);
-            select_element.SelectByValue(option);
-        }
-
-        public void SelectRandomOptionFromDropDown(IWebElement element, string option)
-        {
-            SelectElement select_element = new SelectElement(element);
-            var options = select_element.Options;
-        }
-
-        public void SelectIndexFromDropDown(IWebElement element, int option)
-        {
-            SelectElement select_element = new SelectElement(element);
-            select_element.SelectByIndex(option);
-        }
-
         public void ScrollAndClickButton(IWebElement element)
         {
-            Actions act = new Actions(_driver);
-            //act.MoveToElement(_apply_page.SubmitButton).Click();
-
-            act.ScrollToElement(element).Perform();
-            element.Click();
+            new Actions(_driver)
+                .ScrollToElement(element)
+                .Click()
+                .Perform();
         }
 
         public void ScrollAndClickButtonByJS(IWebElement element)
@@ -58,8 +33,6 @@ namespace FinalProject.Helpers
             js.ExecuteScript("arguments[0].scrollIntoView(true);", element);
             js.ExecuteScript("arguments[0].click();", element);
         }
-
-
 
         public void NavigateToUrl(string url)
         {
@@ -72,17 +45,41 @@ namespace FinalProject.Helpers
 
 
 
-        public void ClickDropDownElement(IWebDriver driver, IWebElement dropdown_element, string option)
-        {
-            //List<WebElement> myElements = driver.FindElements(dropdown_element);
-            //for (WebElement e : myElements)
-            //{
-            //    if (e.getText().equalsIgnoreCase("Your_Desire_Value"))
-            //    {
-            //        e.click();
-            //    }
-            //}
-        }
+        //public void SelectTextFromDropDown(IWebElement element, string option_text)
+        //{
+        //    SelectElement select_element = new SelectElement(element);
+        //    select_element.SelectByText(option_text);
+        //}
+
+        //public void SelectValueFromDropDown(IWebElement element, string option)
+        //{
+        //    SelectElement select_element = new SelectElement(element);
+        //    select_element.SelectByValue(option);
+        //}
+
+        //public void SelectRandomOptionFromDropDown(IWebElement element, string option)
+        //{
+        //    SelectElement select_element = new SelectElement(element);
+        //    var options = select_element.Options;
+        //}
+
+        //public void SelectIndexFromDropDown(IWebElement element, int option)
+        //{
+        //    SelectElement select_element = new SelectElement(element);
+        //    select_element.SelectByIndex(option);
+        //}
+
+        //public void ClickDropDownElement(IWebDriver driver, IWebElement dropdown_element, string option)
+        //{
+        //List<WebElement> myElements = driver.FindElements(dropdown_element);
+        //for (WebElement e : myElements)
+        //{
+        //    if (e.getText().equalsIgnoreCase("sometext"))
+        //    {
+        //        e.click();
+        //    }
+        //}
+        //}
 
 
     }

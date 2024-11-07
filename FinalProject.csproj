@@ -129,7 +129,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\IWebElements.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Pages\ApplyLeavePage.cs" />
     <Compile Include="Pages\HelpPage.cs" />
     <Compile Include="Pages\LeavePage.cs" />
