@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using System;
 using System.Collections.Generic;
 
 namespace FinalProject.Helpers
@@ -10,6 +11,8 @@ namespace FinalProject.Helpers
         public static string URL => "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login";
         public static string AdminId => "Admin";
         public static string AdminPassword => "admin123";
+        public static string FilePath(string project_path = "C:\\Users\\Power\\Documents\\GitHub\\codeyou_qa_final") => $"{project_path}\\Files\\test_document.txt";
+
 
 
         readonly private IWebDriver _driver;
@@ -17,6 +20,19 @@ namespace FinalProject.Helpers
         public SiteHelpers(IWebDriver driver)
         {
             _driver = driver;
+        }
+
+        public bool ElementExists(Func<bool> condition)
+        {
+            try
+            {
+                condition.Invoke();
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
 
         public void ScrollAndClickButton(IWebElement element)

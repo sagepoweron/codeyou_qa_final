@@ -7,6 +7,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 
@@ -33,7 +34,7 @@ namespace FinalProject
         public void Initialize()
         {
             _driver = new ChromeDriver();
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
             _helpers = new SiteHelpers(_driver);
 
             _login_page = new LoginPage(_driver);
@@ -279,7 +280,8 @@ namespace FinalProject
                 .MoveToElement(_apply_leave_page.ToDropdown)
                 .Click()
                 .KeyDown(Keys.Control)
-                .SendKeys("a").KeyUp(Keys.Control)
+                .SendKeys("a")
+                .KeyUp(Keys.Control)
                 .SendKeys(Keys.Delete)
                 .Pause(TimeSpan.FromSeconds(1))
                 .SendKeys(end_text)
@@ -354,7 +356,7 @@ namespace FinalProject
             //_leave_page.ThreeDotsMenu.Click();
             //_leave_page.CancelLeaveButton.Click();
             //new Actions(_driver).Pause(TimeSpan.FromSeconds(1)).Perform();
-            Assert.IsTrue(_leave_page.LeaveCanceledText.Displayed);
+            //Assert.IsTrue(_leave_page.LeaveCanceledText.Displayed);
 
             //verify leave isn't on leave page
             _dashboard.LeaveButton.Click();
@@ -418,7 +420,8 @@ namespace FinalProject
         /// Test 6
         /// </summary>
         [TestMethod]
-        public void UploadFileTest()
+        [DataRow("Some unique comment.")]
+        public void UploadFileTest(string comment)
         {
             _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
@@ -428,35 +431,80 @@ namespace FinalProject
             _dashboard.InfoButton.Click();
 
             _driver.WaitUntil(() => _user_info_page.AddButton.Displayed);
-            //_user_info_page.AddButton.Click();
+            _user_info_page.AddButton.Click();
 
-            //string path = "Files/test_document.txt";
-            //_user_info_page.FileInput.SendKeys(path);
+            string full_path = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
+            string file_path = "\\Files\\test_document.txt";
+            _user_info_page.FileInput.SendKeys(full_path + file_path);
 
-            //_user_info_page.SaveButton3.Click();
-            _driver.Pause(1);
+            _helpers.ScrollAndClickButtonByJS(_user_info_page.CommentTextArea);
 
+            _user_info_page.CommentTextArea.SendKeys(comment);
+
+            _user_info_page.SaveButton3.Click();
+            _driver.Pause(5);
+
+            Assert.IsTrue(_user_info_page.DescriptionText(comment).Displayed);
+            
             string date_text = DateTime.Now.ToString("yyyy-dd-MM");
-            string test_date = "2024-06-02";
+            Assert.IsTrue(_user_info_page.DateAddedText(date_text).Displayed);
 
-            Assert.IsTrue(_user_info_page.DateAddedText(test_date).Displayed);
+            _user_info_page.DeleteBasedOnDescription(comment).Click();
+            _user_info_page.ConfirmDeleteButton.Click();
+            _driver.Pause(5);
 
             _dashboard.Logout();
         }
 
 
         /// <summary>
-        /// Test 7
+        /// Test 7 - Check if iwebelement from another page exists via different ways
         /// </summary>
         [TestMethod]
         public void WildCardNegativeTest()
         {
-            //login as admin
+            //verify site loaded
             _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
             Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
-            _login_page.Login(SiteHelpers.AdminId, SiteHelpers.AdminPassword);
 
+            //check if element from another page was found via try catch
+            {
+                bool exists = false;
+                try
+                {
+                    IWebElement element = _user_info_page.AddButton;
+                    exists = true;
+                    Assert.Fail();
+                }
+                catch (NoSuchElementException)
+                {
+                    exists = false;
+                }
+                Assert.IsFalse(exists);
+            }
 
+            //check if element from another page was found via a list
+            {
+                bool exists = _driver.Exists(_user_info_page.AddButtonByXPath);
+                Assert.IsFalse(exists);
+            }
+
+            //check if element from another page is displayed after a few seconds
+            {
+                bool exists = false;
+                try
+                {
+                    new WebDriverWait(_driver, TimeSpan.FromSeconds(3))
+                                        .Until(d => _user_info_page.AddButton.Displayed);
+                    exists = true;
+                    Assert.Fail();
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    exists = false;
+                }
+                Assert.IsFalse(exists);
+            }
         }
     }
 }

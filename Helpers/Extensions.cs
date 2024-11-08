@@ -2,6 +2,8 @@
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FinalProject.Helpers
 {
@@ -25,6 +27,11 @@ namespace FinalProject.Helpers
         {
             new WebDriverWait(driver, TimeSpan.FromSeconds(10))
                 .Until(d => condition);
+        }
+
+        public static bool Exists(this IWebDriver driver, By by)
+        {
+            return driver.FindElements(by).Count() > 0;
         }
 
         public static void Pause(this IWebDriver driver, int seconds)
