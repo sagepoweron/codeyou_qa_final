@@ -458,10 +458,29 @@ namespace FinalProject
 
 
         /// <summary>
-        /// Test 7 - Check if iwebelement from another page exists via different ways
+        /// Test 7 - Check if empty password causes error message
         /// </summary>
         [TestMethod]
-        public void WildCardNegativeTest()
+        public void MissingPasswordTest()
+        {
+            _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);
+            Assert.IsTrue(_login_page.UsernameTextBox.Displayed);
+            _login_page.Login(SiteHelpers.AdminId, "");
+            Assert.IsTrue(_login_page.RequiredText.Displayed);
+
+            //alert displaying the end of the test
+            IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;
+            js.ExecuteScript("alert('Test Complete!');");
+
+            System.Threading.Thread.Sleep(5000);
+
+            IAlert alert = _driver.SwitchTo().Alert();
+            alert.Accept();
+        }
+
+        //Extra tests
+        [TestMethod]
+        public void MissingElementsTest()
         {
             //verify site loaded
             _driver.WaitUntil(() => _login_page.UsernameTextBox.Displayed);

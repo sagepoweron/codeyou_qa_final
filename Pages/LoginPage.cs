@@ -14,6 +14,7 @@ namespace FinalProject.Pages
         public IWebElement PasswordTextBox => _driver.FindElement(By.XPath("//input[@placeholder='Password']"));
         public IWebElement LoginButton => _driver.FindElement(By.CssSelector("button[type='submit']"));
         public IWebElement LoginButtonByXPath => _driver.FindElement(By.XPath("//button[normalize-space()='Login']"));
+        public IWebElement RequiredText => _driver.FindElement(By.XPath("//span[normalize-space()='Required']"));
 
         readonly private IWebDriver _driver;
         public LoginPage(IWebDriver driver)
